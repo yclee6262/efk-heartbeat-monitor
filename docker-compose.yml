@@ -1,0 +1,57 @@
+version: '3'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api_container
+    ports:
+      - "5000:5000"
+    
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.10
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  fluentd:
+    image: fluent/fluentd-kubernetes-daemonset:v1.16-debian-elasticsearch7-1
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+      - "8888:8888"
+    environment:
+      - FLUENT_ELASTICSEARCH_HOST=elasticsearch
+      - FLUENT_ELASTICSEARCH_PORT=9200
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.10
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY=61b21eb3cf91d75aeb90869310f92a39
+      - XPACK_REPORTING_ENCRYPTIONKEY=e1eacbe8c6ab760d408a23e8a122a4cd
+      - XPACK_SECURITY_ENCRYPTIONKEY=48baa1a2b25a691b05281c5994446fe5
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+  heartbeat:
+    image: docker.elastic.co/beats/heartbeat:7.17.22
+    volumes:
+      - ./heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml:ro
+    command: --strict.perms=false
+    depends_on:
+      - elasticsearch
+      - kibana
+      - api
+
+volumes:
+  esdata:
+    driver: local
