@@ -17,7 +17,7 @@ An integrated monitoring solution combining Elasticsearch, Fluentd, Kibana (EFK 
         6. `tags`：幫監控加上標籤，可以在 filter log 時更方便。
     * 在 `docker-compose.yml` 中，要確保 Heartbeat 是在 Elasticsearch 和 Kibana 之後啟動，可透過 `depends_on` 屬性來設定。
 * ### 觀察方法
-    * 在 Uptime 分頁中，可以看到所有監控中服務的狀態，都沒問題的話就會像下圖這樣都是灰色，服務異常的話就會有紅色的標示出現。
+    * 在 Uptime 分頁中，可以看到所有監控中服務的狀態，都沒問題的話就會都是顯示灰色，服務異常的話就會有紅色的標示出現。
         * Ping over time 是指過去一段時間內呼叫所有列表中 API 的狀態，包含共打了幾次、幾次成功和幾次失敗。
         * 底下則列出各服務的資訊，包含名稱、實際位置以及標籤等等，也可以在這邊開啟警報，讓 Kibana 在服務發生異常時主動通知。
     * 點進監控中服務後就可以看到關於此服務更詳細的監控資訊。
