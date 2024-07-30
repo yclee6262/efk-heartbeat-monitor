@@ -1,0 +1,37 @@
+heartbeat.monitors:
+  - type: http
+    name: ping google
+    urls: ["http://google.com"]
+    schedule: '@every 10s'
+    tags: [google]
+
+  - type: http
+    name: api health check
+    schedule: '@every 10s'
+    urls: ["http://api:5000/api/health"]
+    check.response:
+      status: 200
+    tags: ["api", "health"]
+  
+  - type: http
+    name: api error endpoint
+    schedule: '@every 1m'
+    urls: ["http://api:5000/api/error"]
+    check.response:
+      status: 500
+    tags: ["api", "error"]
+
+  - type: http
+    name: API Delay Check
+    schedule: '@every 2m'
+    urls: ["http://api:5000/api/delay/2"]
+    timeout: 5s
+    check.response:
+      status: 200
+    tags: ["api", "delay"]
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+
+setup.kibana:
+  host: "kibana:5601"
