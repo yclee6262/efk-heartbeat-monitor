@@ -1,5 +1,3 @@
-An integrated monitoring solution combining Elasticsearch, Fluentd, Kibana (EFK stack) with Heartbeat for comprehensive system and service health tracking.
-
 * ### 執行方法
     第一次執行的話執行 `docker-compose build && docker-compose up -d`，之後就都使用 `docker-compose up -d` 即可。
 * ### 實作內容
